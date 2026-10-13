@@ -1,0 +1,77 @@
+@baseUrl = http://localhost:5120
+@token = Bearer secret-token-123
+
+### 1. Get All Users (valid token)
+GET {{baseUrl}}/api/users
+Authorization: {{token}}
+
+### 2. Get All Users (Missing/Invalid Token - Should return 401 Unauthorized)
+GET {{baseUrl}}/api/users
+Authorization: Bearer invalid-token
+
+### 3. Search Users
+GET {{baseUrl}}/api/users?search=eng
+Authorization: {{token}}
+
+### 4. Create a New User
+POST {{baseUrl}}/api/users
+Authorization: {{token}}
+Content-Type: application/json
+{
+"username" : "cbrown",
+"age" : "28",
+"department" : "Engineering"
+}
+
+### 5. Trigger Unhandled Exception (Should return 500 Internal Server Error JSON)
+GET {{baseUrl}}/api/error-test
+Authorization: {{token}}
+
+
+### 6. Get User By ID
+GET {{baseUrl}}/api/users/1
+Authorization: {{token}}
+
+
+
+### 7. Update User (ID: 3)
+PUT {{baseUrl}}/api/users/3
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "username": "cbrown_updated",
+  "age": 29,
+  "department": "Infrastructure"
+}
+
+### 8. Delete User (ID: 3)
+DELETE {{baseUrl}}/api/users/3
+Authorization: {{token}}
+
+
+### Test Edge Case 1: Create user with missing username (Should return 400 Bad Request)
+POST {{baseUrl}}/api/users
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "username": "Bob",
+  "age": 25,
+  "department": "Engineering"
+}
+
+### Test Edge Case 2: Create user with invalid age (Should return 400 Bad Request)
+POST {{baseUrl}}/api/users
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "username": "david_l",
+  "age": 150,
+  "department": "Sales"
+}
+
+### Test Edge Case 3: Get non-existent user ID (Should return 404 Not Found)
+GET {{baseUrl}}/api/users/999
+Authorization: {{token}}
